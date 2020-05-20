@@ -31,6 +31,7 @@ function install_office() {
     #rsync $FLAGS --chown=$USER:$GROUP $SOURCEDIR/desktop/* $HOMEDIR/Desktop/
     #find $HOMEDIR/Desktop/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     $DEBUG && echo "Installation successful.."
+
     return 0
 }
 while true; do
@@ -45,8 +46,8 @@ while true; do
 	[[ $USERID -gt 999 ]] && \
 	    [[ -f "$HOMEDIR/.install_office2007" ]] && \
 	    [[ $(< $HOMEDIR/.install_office2007) == "1" ]] && \
-	    echo "doing install" && install_office && echo "installed" && \
-	    printf "0" > $HOMEDIR/.install_office2007 && echo "done"
+	    install_office && \
+	    printf "0" > $HOMEDIR/.install_office2007
     done
     sleep $FREQ
     FREQ=$(($FREQ * 5 / 4))
