@@ -7,41 +7,41 @@ DEBUG=false
 FREQ=10
 
 function install_office() {
-    $DEBUG && printf "$USER:$GROUP:$HOMEDIR" && sleep 10
-    $DEBUG && ( FLAGS="-av"; echo "Installing for $USER" ) || FLAGS="-a"
-    rsync $FLAGS --chown=$USER:$GROUP $SOURCEDIR/PlayOnLinux/ $POLDIR
-    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${USER}/g; \
-        s/(C:.?.?users.?.?)oem/\1${USER}/g; \
+    $DEBUG && printf "$POLUSER:$GROUP:$HOMEDIR" && sleep 3
+    $DEBUG && ( FLAGS="-av"; echo "Installing for $POLUSER" ) || FLAGS="-a"
+    rsync $FLAGS --chown=$POLUSER:$GROUP $SOURCEDIR/PlayOnLinux/ $POLDIR
+    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${POLUSER}/g; \
+        s/(C:.?.?users.?.?)oem/\1${POLUSER}/g; \
         s/oem-eMachines-E/${HOSTNAME}/g" \
         $POLDIR/wineprefix/Office2007/system.reg
-    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${USER}/g; \
-        s/(C:.?.?users.?.?)oem/\1${USER}/g; 
+    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${POLUSER}/g; \
+        s/(C:.?.?users.?.?)oem/\1${POLUSER}/g; 
         s/oem-eMachines-E/${HOSTNAME}/g; \
-        s/(RSA.?.?)oem/\1${USER}/g" \
+        s/(RSA.?.?)oem/\1${POLUSER}/g" \
         $POLDIR/wineprefix/Office2007/user.reg
-    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${USER}/g; \
-        s/(C:.?.?users.?.?)oem/\1${USER}/g; \
+    sed -r -i "s/(Z:.?.?home.?.?)oem/\1${POLUSER}/g; \
+        s/(C:.?.?users.?.?)oem/\1${POLUSER}/g; \
         s/oem-eMachines-E/${HOSTNAME}/g" \
         $POLDIR/wineprefix/Office2007/userdef.reg
     $DEBUG &&  echo "Setting up shortcuts..."
     find $POLDIR/shortcuts/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     mkdir -p $HOMEDIR/.local/share/applications/ || true
-    rsync $FLASGS --chown=$USER:$GROUP $SOURCEDIR/shortcuts/* $HOMEDIR/.local/share/applications/
-    find $HOMEDIR/.local/share/applications/ -type f -exec sed -r -i "s|(/home/)oem|\1${USER}|g" {} \;
-    #rsync $FLAGS --chown=$USER:$GROUP $SOURCEDIR/desktop/* $HOMEDIR/Desktop/
+    rsync $FLASGS --chown=$POLUSER:$GROUP $SOURCEDIR/shortcuts/* $HOMEDIR/.local/share/applications
+    find $HOMEDIR/.local/share/applications/ -type f -exec sed -r -i "s|(/home/)oem|\1${POLUSER}|g" {} \;
+    #rsync $FLAGS --chown=$POLUSER:$GROUP $SOURCEDIR/desktop/* $HOMEDIR/Desktop/
     #find $HOMEDIR/Desktop/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     $DEBUG && echo "Installation successful.."
 
     return 0
 }
 while true; do
-    for USER in $(users); do
-	USERID=$(id -u $USER)
-	GROUP=$(id -gn $USER)
-	GROUPID=$(id -g $USER)
-	HOMEDIR=$(eval echo ~$USER)
+    for POLUSER in $(users); do
+	USERID=$(id -u $POLUSER)
+	GROUP=$(id -gn $POLUSER)
+	GROUPID=$(id -g $POLUSER)
+	HOMEDIR=$(eval echo ~$POLUSER)
 	POLDIR="$HOMEDIR/.PlayOnLinux"
-	$DEBUG && printf "User: $USER\nGroup: $GROUP\nID: $USERID:$GROUPID\nHome dir: \
+	$DEBUG && printf "User: $POLUSER\nGroup: $GROUP\nID: $USERID:$GROUPID\nHome dir: \
 	    $HOMEDIR\nPlayOnLinux dir: $POLDIR\n"
 	[[ $USERID -gt 999 ]] && \
 	    [[ -f "$HOMEDIR/.install_office2007" ]] && \
