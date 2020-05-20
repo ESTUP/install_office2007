@@ -1,2 +1,2 @@
 # install_office2007
-Install Office 2007 (PlayOnLinux) for new system users
+Copies Office 2007 (PlayOnLinux) installation for new system users
