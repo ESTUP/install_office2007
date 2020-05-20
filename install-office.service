@@ -1,0 +1,13 @@
+[Unit]
+Description=Installs Office 2007 (PlayOnLinux) for new system users
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/install_office2007
+ExecStartPre=-/bin/bash -c "latest=$(curl -sSL https://github.com/ESTUP/install_office2007/releases/download/latest/install_office.sh); ! [[ -z $latest ]] && [[ \"$latest\" == \"$(< install_office.sh)\" ]] ||  echo \"$latest\" > install_office.sh"
+ExecStart=/bin/bash -c "./install_office.sh"
+#Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
