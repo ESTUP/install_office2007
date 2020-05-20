@@ -25,9 +25,10 @@ function install_office() {
         $POLDIR/wineprefix/Office2007/userdef.reg
     $DEBUG &&  echo "Setting up shortcuts..."
     find $POLDIR/shortcuts/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
-    mkdir -p $HOMEDIR/.local/share/applications/ || true
+    mkdir -p $HOMEDIR/.local/share/applications || true
+    chown -R $POLUSER: $HOMEDIR/.local/share/applications
     rsync $FLASGS --chown=$POLUSER:$GROUP $SOURCEDIR/shortcuts/* $HOMEDIR/.local/share/applications
-    find $HOMEDIR/.local/share/applications/ -type f -exec sed -r -i "s|(/home/)oem|\1${POLUSER}|g" {} \;
+    find $HOMEDIR/.local/share/applications -type f -exec sed -r -i "s|(/home/)oem|\1${POLUSER}|g" {} \;
     #rsync $FLAGS --chown=$POLUSER:$GROUP $SOURCEDIR/desktop/* $HOMEDIR/Desktop/
     #find $HOMEDIR/Desktop/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     $DEBUG && echo "Installation successful.."
