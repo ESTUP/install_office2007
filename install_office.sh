@@ -3,7 +3,7 @@
 SOURCEDIR="/opt/install_office2007"
 HOSTNAME=$(hostname | cut -c -15)
 DEBUG=false
-DEBUG=true
+#DEBUG=true
 FREQ=10
 
 function install_office() {
@@ -23,6 +23,7 @@ function install_office() {
         s/(C:.?.?users.?.?)oem/\1${POLUSER}/g; \
         s/oem-eMachines-E/${HOSTNAME}/g" \
         $POLDIR/wineprefix/Office2007/userdef.reg
+    mv $POLDIR/wineprefix/Office2007/drive_c/users/oem $POLDIR/wineprefix/Office2007/drive_c/users/$POLUSER
     $DEBUG &&  echo "Setting up shortcuts..."
     find $POLDIR/shortcuts -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     sudo -u $POLUSER mkdir -p $HOMEDIR/.local/share/applications || true
