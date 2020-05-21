@@ -3,13 +3,13 @@
 SOURCEDIR="/opt/install_office2007"
 HOSTNAME=$(hostname | cut -c -15)
 DEBUG=false
-#DEBUG=true
+DEBUG=true
 FREQ=10
 
 function install_office() {
-    $DEBUG && printf "$POLUSER:$GROUP:$HOMEDIR" && sleep 3
-    $DEBUG && ( FLAGS="-av"; echo "Installing for $POLUSER" ) || FLAGS="-a"
-    rsync $FLAGS --chown=$POLUSER:$GROUP $SOURCEDIR/PlayOnLinux/ $POLDIR
+    $DEBUG && printf "$POLUSER:$GROUP:$HOMEDIR\n"
+    $DEBUG && echo "Installing for $POLUSER"
+    rsync -a --chown=$POLUSER:$GROUP $SOURCEDIR/PlayOnLinux/ $POLDIR
     sed -r -i "s/(Z:.?.?home.?.?)oem/\1${POLUSER}/g; \
         s/(C:.?.?users.?.?)oem/\1${POLUSER}/g; \
         s/oem-eMachines-E/${HOSTNAME}/g" \
@@ -24,9 +24,9 @@ function install_office() {
         s/oem-eMachines-E/${HOSTNAME}/g" \
         $POLDIR/wineprefix/Office2007/userdef.reg
     $DEBUG &&  echo "Setting up shortcuts..."
-    find $POLDIR/shortcuts/ -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
+    find $POLDIR/shortcuts -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     sudo -u $POLUSER mkdir -p $HOMEDIR/.local/share/applications || true
-    rsync $FLASGS --chown=$POLUSER:$GROUP $SOURCEDIR/shortcuts/* $HOMEDIR/.local/share/applications
+    rsync -a --chown=$POLUSER:$GROUP $SOURCEDIR/shortcuts/ $HOMEDIR/.local/share/applications
     find $HOMEDIR/.local/share/applications -type f -exec sed -r -i "s|(/home/)oem|\1${POLUSER}|g" {} \;
     sudo -u $POLUSER xdg-desktop-menu forceupdate
     #rsync $FLAGS --chown=$POLUSER:$GROUP $SOURCEDIR/desktop/* $HOMEDIR/Desktop/
