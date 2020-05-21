@@ -25,6 +25,7 @@ function install_office() {
         $POLDIR/wineprefix/Office2007/userdef.reg
     mv $POLDIR/wineprefix/Office2007/drive_c/users/oem $POLDIR/wineprefix/Office2007/drive_c/users/$POLUSER
     $DEBUG &&  echo "Setting up shortcuts..."
+    ln -s $POLDIR/wineprefix "$HOMEDIR/PlayOnLinux's virtual drives"
     find $POLDIR/shortcuts -type f -exec sed -r -i "s|/home/oem|${HOMEDIR}|g" {} \;
     sudo -u $POLUSER mkdir -p $HOMEDIR/.local/share/applications || true
     rsync -a --chown=$POLUSER:$GROUP $SOURCEDIR/shortcuts/ $HOMEDIR/.local/share/applications
